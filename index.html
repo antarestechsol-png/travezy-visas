@@ -1,614 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Travezy Visas</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --navy: #0a1628;
-      --deep: #0f2044;
-      --gold: #c9a84c;
-      --gold-light: #e8c97a;
-      --white: #ffffff;
-      --text-muted: #8a9bb8;
-      --card-bg: #111e35;
-      --border: rgba(201,168,76,0.2);
-    }
-
-    html, body {
-      height: 100%;
-      width: 100%;
-      font-family: 'DM Sans', sans-serif;
-      background: var(--navy);
-      color: var(--white);
-      overflow: hidden;
-    }
-
-    .app {
-      max-width: 430px;
-      margin: 0 auto;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* HEADER */
-    .header {
-      background: var(--deep);
-      padding: 16px 20px 12px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--gold);
-    }
-    .logo span { color: var(--white); }
-
-    /* PAGES */
-    .pages {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      min-height: 0;
-    }
-    .page {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 22px 18px 90px;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(14px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .page.active {
-      opacity: 1;
-      pointer-events: all;
-      transform: translateY(0);
-    }
-
-    /* BOTTOM NAV */
-    .nav {
-      background: var(--deep);
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-shrink: 0;
-    }
-    .nav-btn {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 10px 4px 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: color 0.2s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .nav-btn.active { color: var(--gold); }
-    .nav-btn svg { width: 22px; height: 22px; stroke-width: 1.8; }
-    .nav-label { font-size: 10px; font-weight: 500; }
-
-    /* SHARED */
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 30px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 6px;
-    }
-    .gold { color: var(--gold); }
-    .divider { width: 40px; height: 2px; background: var(--gold); margin: 10px 0 18px; border-radius: 2px; }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 12px;
-    }
-    .badge {
-      display: inline-block;
-      background: rgba(201,168,76,0.12);
-      color: var(--gold);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 12px;
-      letter-spacing: 0.5px;
-      margin-bottom: 14px;
-    }
-    .btn-primary {
-      display: inline-block;
-      background: var(--gold);
-      color: var(--navy);
-      font-weight: 700;
-      font-size: 13px;
-      padding: 12px 22px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn-outline {
-      display: inline-block;
-      background: transparent;
-      color: var(--gold);
-      font-weight: 600;
-      font-size: 13px;
-      padding: 11px 20px;
-      border-radius: 8px;
-      border: 1.5px solid var(--gold);
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* HOME */
-    .hero {
-      background: linear-gradient(145deg, #0f2044 0%, #0a1628 100%);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 26px 20px;
-      margin-bottom: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 180px; height: 180px;
-      background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .hero-tag {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--gold);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 34px;
-      font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 12px;
-    }
-    .hero p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #9db0cc;
-      margin-bottom: 20px;
-    }
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 8px;
-      text-align: center;
-    }
-    .stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--gold);
-    }
-    .stat-label { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-    .flags-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-    .flag-chip {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-
-    /* ABOUT */
-    .about-hero {
-      background: linear-gradient(135deg, #0f2044, #0a1628);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 22px;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-    .about-icon {
-      width: 60px; height: 60px;
-      background: rgba(201,168,76,0.12);
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 12px;
-      font-size: 26px;
-    }
-    .team-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .team-avatar {
-      width: 46px; height: 46px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), #8a6520);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--navy);
-      flex-shrink: 0;
-    }
-    .team-name { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
-    .team-role { font-size: 12px; color: var(--text-muted); }
-
-    /* SERVICES */
-    .service-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 12px;
-    }
-    .service-icon {
-      width: 42px; height: 42px;
-      background: rgba(201,168,76,0.12);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-    .service-title { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
-    .service-desc { font-size: 13px; color: #8a9bb8; line-height: 1.6; }
-    .price-tag {
-      display: inline-block;
-      margin-top: 10px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--gold);
-      background: rgba(201,168,76,0.1);
-      border-radius: 6px;
-      padding: 4px 10px;
-    }
-
-    /* CONTACT */
-    .contact-info-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .contact-icon {
-      width: 40px; height: 40px;
-      background: rgba(201,168,76,0.12);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-size: 18px;
-    }
-    .contact-label { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
-    .contact-value { font-size: 14px; font-weight: 500; }
-    .input-group { margin-bottom: 12px; }
-    .input-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-      margin-bottom: 5px;
-      text-transform: uppercase;
-    }
-    .input-field {
-      width: 100%;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 14px;
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      -webkit-appearance: none;
-    }
-    .input-field:focus { border-color: var(--gold); }
-    .input-field::placeholder { color: #4a5a70; }
-    textarea.input-field { resize: none; height: 90px; }
-    select.input-field { color: var(--white); }
-    select.input-field option { background: var(--deep); color: var(--white); }
-
-    .page::-webkit-scrollbar { width: 0; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>Travezy Visas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0a1628;--deep:#0f2044;--gold:#c9a84c;--white:#fff;--muted:#8a9bb8;--card:#111e35;--bdr:rgba(201,168,76,0.2)}
+html,body{height:100%;width:100%;font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow:hidden}
+.app{max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.hdr{background:var(--deep);padding:15px 20px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold)}
+.logo span{color:var(--white)}
+.pages{flex:1;position:relative;overflow:hidden;min-height:0}
+.page{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:22px 18px 90px;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .3s,transform .3s}
+.page.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.nav{background:var(--deep);border-top:1px solid var(--bdr);display:flex;flex-shrink:0}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 12px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s;-webkit-tap-highlight-color:transparent}
+.nb.active{color:var(--gold)}
+.nb svg{width:22px;height:22px;stroke-width:1.8}
+.nl{font-size:10px;font-weight:500}
+.ttl{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.gold{color:var(--gold)}
+.dvd{width:40px;height:2px;background:var(--gold);margin:10px 0 18px;border-radius:2px}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:18px;margin-bottom:12px}
+.bdg{display:inline-block;background:rgba(201,168,76,.12);color:var(--gold);border:1px solid var(--bdr);border-radius:20px;font-size:11px;font-weight:600;padding:4px 12px;letter-spacing:.5px;margin-bottom:14px}
+.btn1{display:inline-block;background:var(--gold);color:var(--navy);font-weight:700;font-size:13px;padding:12px 22px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent}
+.btn2{display:inline-block;background:transparent;color:var(--gold);font-weight:600;font-size:13px;padding:11px 20px;border-radius:8px;border:1.5px solid var(--gold);cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent}
+.hero{background:linear-gradient(145deg,#0f2044,#0a1628);border:1px solid var(--bdr);border-radius:18px;padding:26px 20px;margin-bottom:20px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(201,168,76,.1),transparent 70%);border-radius:50%;pointer-events:none}
+.htag{font-size:11px;font-weight:600;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;line-height:1.15;margin-bottom:12px}
+.hero p{font-size:14px;line-height:1.6;color:#9db0cc;margin-bottom:20px}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.scard{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:14px 8px;text-align:center}
+.snum{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--gold)}
+.slbl{font-size:10px;color:var(--muted);margin-top:4px}
+.flags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.fc{background:var(--card);border:1px solid var(--bdr);border-radius:20px;padding:6px 12px;font-size:12px}
+.ahero{background:linear-gradient(135deg,#0f2044,#0a1628);border:1px solid var(--bdr);border-radius:16px;padding:22px;margin-bottom:16px;text-align:center}
+.aicon{width:60px;height:60px;background:rgba(201,168,76,.12);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px}
+.tcard{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.tavt{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#8a6520);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--navy);flex-shrink:0}
+.tnm{font-weight:600;font-size:15px;margin-bottom:2px}
+.trl{font-size:12px;color:var(--muted)}
+.svcard{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:18px;margin-bottom:12px}
+.svic{width:42px;height:42px;background:rgba(201,168,76,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.svttl{font-weight:600;font-size:15px;margin-bottom:6px}
+.svdsc{font-size:13px;color:#8a9bb8;line-height:1.6}
+.ptag{display:inline-block;margin-top:10px;font-size:11px;font-weight:600;color:var(--gold);background:rgba(201,168,76,.1);border-radius:6px;padding:4px 10px}
+.cicard{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.ciico{width:40px;height:40px;background:rgba(201,168,76,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.cilbl{font-size:11px;color:var(--muted);margin-bottom:2px}
+.cival{font-size:14px;font-weight:500}
+.ig{margin-bottom:12px}
+.il{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;margin-bottom:5px;text-transform:uppercase}
+.ifield{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none;-webkit-appearance:none}
+.ifield:focus{border-color:var(--gold)}
+.ifield::placeholder{color:#4a5a70}
+textarea.ifield{resize:none;height:90px}
+select.ifield option{background:var(--deep);color:var(--white)}
+.page::-webkit-scrollbar{width:0}
+</style>
 </head>
 <body>
 <div class="app">
+<div class="hdr">
+  <div class="logo">Travezy<span> Visas</span></div>
+  <div style="font-size:20px">&#127466;&#127482;&#127760;</div>
+</div>
+<div class="pages">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="logo">Travezy<span> Visas</span></div>
-    <div style="font-size:20px; letter-spacing:2px;">&#127466;&#127482; &#127760;</div>
+<div class="page active" id="pg-home">
+  <div class="hero">
+    <div class="htag">&#10022; Trusted Visa Consultants</div>
+    <h1>Your Gateway to <span class="gold">Europe</span> Starts Here</h1>
+    <p>Travezy Visas handles the entire visa process so you can focus on your journey. Fast, reliable and hassle-free.</p>
+    <button class="btn1" onclick="goTo('services')">Explore Services</button>
+    &nbsp;
+    <button class="btn2" onclick="goTo('contact')">Contact Us</button>
   </div>
-
-  <!-- Pages -->
-  <div class="pages">
-
-    <!-- HOME -->
-    <div class="page active" id="page-home">
-      <div class="hero">
-        <div class="hero-tag">&#10022; Trusted Visa Consultants</div>
-        <h1>Your Gateway to <span class="gold">Europe</span> Starts Here</h1>
-        <p>Travezy Visas handles the entire visa process so you can focus on your journey. Fast, reliable, and hassle-free consultancy.</p>
-        <button class="btn-primary" onclick="goTo('services')">Explore Services</button>
-        &nbsp;
-        <button class="btn-outline" onclick="goTo('contact')">Contact Us</button>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-num">5K+</div>
-          <div class="stat-label">Visas Approved</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">98%</div>
-          <div class="stat-label">Success Rate</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">30+</div>
-          <div class="stat-label">Countries</div>
-        </div>
-      </div>
-
-      <div class="section-title">Countries We <span class="gold">Cover</span></div>
-      <div class="divider"></div>
-      <div class="flags-row">
-        <div class="flag-chip">&#127465;&#127466; Germany</div>
-        <div class="flag-chip">&#127467;&#127479; France</div>
-        <div class="flag-chip">&#127470;&#127481; Italy</div>
-        <div class="flag-chip">&#127466;&#127480; Spain</div>
-        <div class="flag-chip">&#127475;&#127473; Netherlands</div>
-        <div class="flag-chip">&#127477;&#127481; Portugal</div>
-        <div class="flag-chip">&#127464;&#127469; Switzerland</div>
-        <div class="flag-chip">&#127462;&#127481; Austria</div>
-        <div class="flag-chip">&#127463;&#127466; Belgium</div>
-        <div class="flag-chip">&#127480;&#127466; Sweden</div>
-        <div class="flag-chip">+ More</div>
-      </div>
-    </div>
-
-    <!-- ABOUT -->
-    <div class="page" id="page-about">
-      <div class="badge">&#10022; Who We Are</div>
-      <div class="section-title">About <span class="gold">Travezy Visas</span></div>
-      <div class="divider"></div>
-
-      <div class="about-hero">
-        <div class="about-icon">&#127963;&#65039;</div>
-        <p style="font-size:14px; line-height:1.7; color:#9db0cc;">
-          Travezy Visas is a premier visa advisory firm helping individuals, families, and businesses navigate the complexities of European immigration and visa regulations — with a personal touch and <strong style="color:var(--gold)">end-to-end support</strong> at every step.
-        </p>
-      </div>
-
-      <div class="card">
-        <div style="font-weight:600; font-size:15px; margin-bottom:8px;">&#127919; Our Mission</div>
-        <p style="font-size:13px; color:#8a9bb8; line-height:1.65;">To make international travel and relocation seamless by providing end-to-end visa support, expert guidance, and personalized service tailored to every client's unique needs.</p>
-      </div>
-
-      <div class="card">
-        <div style="font-weight:600; font-size:15px; margin-bottom:8px;">&#128161; Why Choose Us</div>
-        <p style="font-size:13px; color:#8a9bb8; line-height:1.8;">
-          &#10004; Dedicated case officer for every applicant<br>
-          &#10004; Real-time application tracking<br>
-          &#10004; Document checklist and preparation support<br>
-          &#10004; Embassy interview coaching<br>
-          &#10004; 98% visa approval success rate
-        </p>
-      </div>
-
-      <div class="section-title" style="font-size:22px; margin-bottom:6px;">Meet Our <span class="gold">Team</span></div>
-      <div class="divider"></div>
-
-      <div class="team-card">
-        <div class="team-avatar">SH</div>
-        <div>
-          <div class="team-name">Shravan</div>
-          <div class="team-role">Co-Founder &amp; Visa Consultant</div>
-        </div>
-      </div>
-      <div class="team-card">
-        <div class="team-avatar">RJ</div>
-        <div>
-          <div class="team-name">Rajesh</div>
-          <div class="team-role">Co-Founder &amp; Immigration Specialist</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SERVICES -->
-    <div class="page" id="page-services">
-      <div class="badge">&#10022; What We Offer</div>
-      <div class="section-title">Our <span class="gold">Services</span></div>
-      <div class="divider"></div>
-
-      <div class="service-card">
-        <div class="service-icon">&#9992;&#65039;</div>
-        <div class="service-title">Schengen Tourist Visa</div>
-        <div class="service-desc">Planning a trip to Europe? We prepare and submit your Schengen visa application with all required documentation, cover letters, and itinerary planning.</div>
-        <div class="price-tag">Starting from $79</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">&#128188;</div>
-        <div class="service-title">Business Visa</div>
-        <div class="service-desc">Attending conferences, meetings, or trade fairs in Europe? We handle business visa applications with fast turnaround for professionals.</div>
-        <div class="price-tag">Starting from $99</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">&#127891;</div>
-        <div class="service-title">Student Visa</div>
-        <div class="service-desc">Accepted to a European university? Our student visa service guides you through the full enrollment and visa process for Germany, France, Italy and more.</div>
-        <div class="price-tag">Starting from $119</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">&#128106;</div>
-        <div class="service-title">Family Reunification</div>
-        <div class="service-desc">Reunite with your loved ones in Europe. We manage long-stay visa and residence permit applications for family sponsorship cases.</div>
-        <div class="price-tag">Starting from $149</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">&#127968;</div>
-        <div class="service-title">Work &amp; Residence Permit</div>
-        <div class="service-desc">Looking to live and work in Europe? From job seeker visas to full residence permits — we manage the entire process from start to finish.</div>
-        <div class="price-tag">Starting from $199</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">&#128203;</div>
-        <div class="service-title">Document Attestation</div>
-        <div class="service-desc">We assist with document translation, notarization, and attestation required by European embassies and consulates.</div>
-        <div class="price-tag">Starting from $49</div>
-      </div>
-    </div>
-
-    <!-- CONTACT -->
-    <div class="page" id="page-contact">
-      <div class="badge">&#10022; Get In Touch</div>
-      <div class="section-title">Contact <span class="gold">Us</span></div>
-      <div class="divider"></div>
-
-      <div class="contact-info-card">
-        <div class="contact-icon">&#128222;</div>
-        <div>
-          <div class="contact-label">Phone / WhatsApp</div>
-          <div class="contact-value">+1 (800) 123-4567</div>
-        </div>
-      </div>
-      <div class="contact-info-card">
-        <div class="contact-icon">&#128231;</div>
-        <div>
-          <div class="contact-label">Email</div>
-          <div class="contact-value">info@travezyvisas.com</div>
-        </div>
-      </div>
-      <div class="contact-info-card">
-        <div class="contact-icon">&#128205;</div>
-        <div>
-          <div class="contact-label">Office</div>
-          <div class="contact-value">42 Consul Street, Business Bay</div>
-        </div>
-      </div>
-
-      <div style="margin-top:18px; margin-bottom:12px; font-weight:600; font-size:16px;">Send Us a Message</div>
-
-      <div class="input-group">
-        <label class="input-label">Full Name</label>
-        <input class="input-field" type="text" placeholder="Your full name" />
-      </div>
-      <div class="input-group">
-        <label class="input-label">Email Address</label>
-        <input class="input-field" type="email" placeholder="your@email.com" />
-      </div>
-      <div class="input-group">
-        <label class="input-label">Visa Type</label>
-        <select class="input-field">
-          <option value="">Select visa type...</option>
-          <option>Schengen Tourist Visa</option>
-          <option>Business Visa</option>
-          <option>Student Visa</option>
-          <option>Family Reunification</option>
-          <option>Work &amp; Residence Permit</option>
-          <option>Document Attestation</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <label class="input-label">Message</label>
-        <textarea class="input-field" placeholder="Tell us about your visa requirements..."></textarea>
-      </div>
-      <button class="btn-primary" id="send-btn" style="width:100%; text-align:center; padding:14px;" onclick="submitForm()">Send Message &#10022;</button>
-      <p style="font-size:12px; color:var(--text-muted); text-align:center; margin-top:12px;">Our team responds within 24 hours on working days.</p>
-    </div>
-
+  <div class="sgrid">
+    <div class="scard"><div class="snum">5K+</div><div class="slbl">Visas Approved</div></div>
+    <div class="scard"><div class="snum">98%</div><div class="slbl">Success Rate</div></div>
+    <div class="scard"><div class="snum">30+</div><div class="slbl">Countries</div></div>
   </div>
-
-  <!-- Bottom Nav -->
-  <nav class="nav">
-    <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span class="nav-label">Home</span>
-    </button>
-    <button class="nav-btn" id="nav-about" onclick="goTo('about')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      <span class="nav-label">About</span>
-    </button>
-    <button class="nav-btn" id="nav-services" onclick="goTo('services')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-      <span class="nav-label">Services</span>
-    </button>
-    <button class="nav-btn" id="nav-contact" onclick="goTo('contact')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.02 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
-      <span class="nav-label">Contact</span>
-    </button>
-  </nav>
-
+  <div class="ttl">Countries We <span class="gold">Cover</span></div>
+  <div class="dvd"></div>
+  <div class="flags">
+    <div class="fc">&#127465;&#127466; Germany</div>
+    <div class="fc">&#127467;&#127479; France</div>
+    <div class="fc">&#127470;&#127481; Italy</div>
+    <div class="fc">&#127466;&#127480; Spain</div>
+    <div class="fc">&#127475;&#127473; Netherlands</div>
+    <div class="fc">&#127477;&#127481; Portugal</div>
+    <div class="fc">&#127464;&#127469; Switzerland</div>
+    <div class="fc">&#127462;&#127481; Austria</div>
+    <div class="fc">&#127463;&#127466; Belgium</div>
+    <div class="fc">&#127480;&#127466; Sweden</div>
+    <div class="fc">+ More</div>
+  </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  function goTo(page) {
-    var pages = document.querySelectorAll('.page');
-    var navBtns = document.querySelectorAll('.nav-btn');
-    for (var i = 0; i < pages.length; i++) {
-      pages[i].classList.remove('active');
-    }
-    for (var j = 0; j < navBtns.length; j++) {
-      navBtns[j].classList.remove('active');
-    }
-    var targetPage = document.getElementById('page-' + page);
-    var targetNav = document.getElementById('nav-' + page);
-    if (targetPage) {
-      targetPage.classList.add('active');
-      targetPage.scrollTop = 0;
-    }
-    if (targetNav) {
-      targetNav.classList.add('active');
-    }
-  }
+<div class="page" id="pg-about">
+  <div class="bdg">&#10022; Who We Are</div>
+  <div class="ttl">About <span class="gold">Travezy Visas</span></div>
+  <div class="dvd"></div>
+  <div class="ahero">
+    <div class="aicon">&#127963;</div>
+    <p style="font-size:14px;line-height:1.7;color:#9db0cc">Travezy Visas is a premier visa advisory firm helping individuals, families, and businesses navigate European immigration with <strong style="color:var(--gold)">end-to-end support</strong> at every step.</p>
+  </div>
+  <div class="card">
+    <div style="font-weight:600;font-size:15px;margin-bottom:8px">&#127919; Our Mission</div>
+    <p style="font-size:13px;color:#8a9bb8;line-height:1.65">To make international travel and relocation seamless by providing end-to-end visa support, expert guidance, and personalized service tailored to every client's needs.</p>
+  </div>
+  <div class="card">
+    <div style="font-weight:600;font-size:15px;margin-bottom:8px">&#128161; Why Choose Us</div>
+    <p style="font-size:13px;color:#8a9bb8;line-height:1.8">
+      &#10004; Dedicated case officer for every applicant<br>
+      &#10004; Real-time application tracking<br>
+      &#10004; Document checklist and preparation support<br>
+      &#10004; Embassy interview coaching<br>
+      &#10004; 98% visa approval success rate
+    </p>
+  </div>
+  <div class="ttl" style="font-size:22px;margin-bottom:6px">Meet Our <span class="gold">Founders</span></div>
+  <div class="dvd"></div>
+  <div class="tcard">
+    <div class="tavt">SH</div>
+    <div><div class="tnm">Shravan</div><div class="trl">Co-Founder &amp; Visa Consultant</div></div>
+  </div>
+  <div class="tcard">
+    <div class="tavt">RJ</div>
+    <div><div class="tnm">Rajesh</div><div class="trl">Co-Founder &amp; Immigration Specialist</div></div>
+  </div>
+</div>
 
-  function submitForm() {
-    var btn = document.getElementById('send-btn');
-    btn.textContent = 'Message Sent!';
-    btn.style
+<div class="page" id="pg-services">
+  <div class="bdg">&#10022; What We Offer</div>
+  <div class="ttl">Our <span class="gold">Services</span></div>
+  <div class="dvd"></div>
+  <div class="svcard">
+    <div class="svic">&#9992;</div>
+    <div class="svttl">Schengen Tourist Visa</div>
+    <div class="svdsc">Planning a trip to Europe? We prepare and submit your Schengen visa application with all required documentation, cover letters, and itinerary planning.</div>
+    <div class="ptag">Starting from $79</div>
+  </div>
+  <div class="svcard">
+    <div class="svic">&#128188;</div>
+    <div class="svttl">Business Visa</div>
+    <div class="svdsc">Attending conferences, meetings, or trade fairs in Europe? We handle business visa applications with fast turnaround for professionals.</div>
+    <div class="ptag">Starting from $99</div>
+  </div>
+  <div class="svcard">
+    <div class="svic">&#127891;</div>
+    <div class="svttl">Student Visa</div>
+    <div class="svdsc">Accepted to a European university? We guide you through the full enrollment and visa process for Germany, France, Italy and more.</div>
+    <div class="ptag">Starting from $119</div>
+  </div>
+  <div class="svcard">
+    <div class="svic">&#128106;</div>
+    <div class="svttl">Family Reunification</div>
+    <div class="svdsc">Reunite with your loved ones in Europe. We manage long-stay visa and residence permit applications for family sponsorship cases.</div>
+    <div class="ptag">Starting from $149</div>
+  </div>
+  <div class="svcard">
+    <div class="svic">&#127968;</div>
+    <div class="svttl">Work &amp; Residence Permit</div>
+    <div class="svdsc">Looking to live and work in Europe? From job seeker visas to full residence permits, we manage the entire process start to finish.</div>
+    <div class="ptag">Starting from $199</div>
+  </div>
+  <div class="svcard">
+    <div class="svic">&#128203;</div>
+    <div class="svttl">Document Attestation</div>
+    <div class="svdsc">We assist with document translation, notarization, and attestation required by European embassies and consulates.</div>
+    <div class="ptag">Starting from $49</div>
+  </div>
+</div>
+
+<div class="page" id="pg-contact">
+  <div class="bdg">&#10022; Get In Touch</div>
+  <div class="ttl">Contact <span class="gold">Us</span></div>
+  <div class="dvd"></div>
+  <div class="cicard">
+    <div class="ciico">&#128222;</div>
+    <div><div class="cilbl">Phone / WhatsApp</div><div class="cival">+1 (800) 123-4567</div></div>
+  </div>
+  <div class="cicard">
+    <div class="ciico">&#128231;</div>
+    <div><div class="cilbl">Email</div><div class="cival">info@travezyvisas.com</div></div>
+  </div>
+  <div class="cicard">
+    <div class="ciico">&#128205;</div>
+    <div><div class="cilbl">Office</div><div class="cival">42 Consul Street, Business Bay</div></div>
+  </div>
+  <div style="margin-top:18px;margin-bottom:12px;font-weight:600;font-size:16px">Send Us a Message</div>
+  <div class="ig"><label class="il">Full Name</label><input class="ifield" type="text" placeholder="Your full name"/></div>
+  <div class="ig"><label class="il">Email Address</label><input class="ifield" type="email" placeholder="your@email.com"/></div>
+  <div class="ig">
+    <label class="il">Visa Type</label>
+    <select class="ifield">
+      <option value="">Select visa type...</option>
+      <option>Schengen Tourist Visa</option>
+      <option>Business Visa</option>
+      <option>Student Visa</option>
+      <option>Family Reunification</option>
+      <option>Work &amp; Residence Permit</option>
+      <option>Document Attestation</option>
+    </select>
+  </div>
+  <div class="ig"><label class="il">Message</label><textarea class="ifield" placeholder="Tell us about your visa requirements..."></textarea></div>
+  <button class="btn1" id="sendbtn" style="width:100%;text-align:center;padding:14px" onclick="sendMsg()">Send Message &#10022;</button>
+  <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px">Our team responds within 24 hours on working days.</p>
+</div>
+
+</div>
+<nav class="nav">
+  <button class="nb active" id="nb-home" onclick="goTo('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="nl">Home</span>
+  </button>
+  <button class="nb" id="nb-about" onclick="goTo('about')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span class="nl">About</span>
+  </button>
+  <button class="nb" id="nb-services" onclick="goTo('services')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+    <span class="nl">Services</span>
+  </button>
+  <button class="nb" id="nb-contact" onclick="goTo('contact')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.02 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
+    <span class="nl">Contact</span>
+  </button>
+</nav>
+</div>
+<script type="text/javascript">
+var pages=['home','about','services','contact'];
+function goTo(p){
+  for(var i=0;i<pages.length;i++){
+    var pg=document.getElementById('pg-'+pages[i]);
+    var nb=document.getElementById('nb-'+pages[i]);
+    if(pg){pg.className=pages[i]===p?'page active':'page';}
+    if(nb){nb.className=pages[i]===p?'nb active':'nb';}
+  }
+  var t=document.getElementById('pg-'+p);
+  if(t)t.scrollTop=0;
+}
+function sendMsg(){
+  var b=document.getElementById('sendbtn');
+  b.textContent='Message Sent!';
+  b.style.background='#2e7d32';
+  b.style.color='#fff';
+  setTimeout(function(){
+    b.textContent='Send Message';
+    b.style.background='';
+    b.style.color='';
+  },3000);
+}
+</script>
+</body>
+</html>
